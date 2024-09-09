@@ -1,0 +1,36 @@
+#cloud-config
+
+timezone: America/Sao_Paulo
+
+package_update: true
+package_upgrade: true
+
+runcmd:
+  - wget https://repo.zabbix.com/zabbix/7.0/ubuntu-arm64/pool/main/z/zabbix-release/zabbix-release_7.0-2+ubuntu22.04_all.deb
+  - dpkg -i zabbix-release_7.0-2+ubuntu22.04_all.deb
+  - apt update
+  - apt install -y pwgen zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent
+  - export MYSQL_ZABBIX_PASSWORD=$(pwgen -1)
+  - export MYSQL_ROOT_PASSWORD=$(pwgen -1)
+  - cp /etc/zabbix/zabbix_server.conf /etc/zabbix/zabbix_server.conf.bkp
+  - cat /etc/zabbix/zabbix_server.conf.bkp | sed "s/# DBPassword=/DBPassword=$MYSQL_ZABBIX_PASSWORD/" > /etc/zabbix/zabbix_server.conf
+  - echo "create database $MYSQL_ZABBIX_DATABASE character set utf8mb4 collate utf8mb4_bin;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+  - echo "create user $MYSQL_ZABBIX_USER@localhost identified by '$MYSQL_ZABBIX_PASSWORD';" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+  - echo "grant all privileges on $MYSQL_ZABBIX_DATABASE.* to $MYSQL_ZABBIX_USER@localhost;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+  - echo "set global log_bin_trust_function_creators = 1;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+  - zcat /usr/share/zabbix-sql-scripts/mysql/server.sql.gz | mysql --default-character-set=utf8mb4 --database=$MYSQL_ZABBIX_DATABASE -u$MYSQL_ZABBIX_USER -p$MYSQL_ZABBIX_PASSWORD
+  - echo "set global log_bin_trust_function_creators = 0;" | mysql -uroot -p$MYSQL_ROOT_PASSWORD
+  - systemctl restart zabbix-server zabbix-agent apache2
+  - systemctl enable zabbix-server zabbix-agent apache2
+
+write_files:
+- path: /etc/environment
+  content: |
+    DB_SERVER_HOST=mysql
+    MYSQL_ZABBIX_DATABASE=zabbix
+    MYSQL_ZABBIX_USER=zabbix
+    PHP_TZ=America/Sao_Paulo
+    ZBX_SERVER_HOST=127.0.0.1
+  append: true
+
+final_message: "The system is finally up, after $UPTIME seconds"
