@@ -3,8 +3,8 @@ resource "lxd_storage_pool" "default" {
   driver = "dir"
 }
 
-resource "lxd_storage_pool" "zfs" {
-  name   = "lcx"
+resource "lxd_storage_pool" "nvme0n1" {
+  name   = "nvme0n1"
   driver = "zfs"
   source = "/dev/nvme0n1"
 }
