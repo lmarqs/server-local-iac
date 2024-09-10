@@ -1,7 +1,4 @@
 #cloud-config
-
-# timezone: America/Sao_Paulo
-
 package_update: true
 package_upgrade: true
 
