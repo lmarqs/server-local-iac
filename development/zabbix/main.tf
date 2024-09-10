@@ -17,8 +17,6 @@ module "cloudinit" {
   project = var.project
 
   user_data      = file("${path.module}/cloud-init/user-data.yaml")
-  # network_config = file("${path.module}/cloud-init/network-config.yaml")
-
   network_config = yamlencode(module.macvlan.network_config)
 }
 
