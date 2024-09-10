@@ -1,9 +1,6 @@
 resource "lxd_profile" "default" {
-  name        = "default"
-  description = "Default LXD profile"
-  #   config = {
-  #     "limits.cpu" = 2
-  #   }
+  name    = "default"
+  project = lxd_project.this.name
 
   device {
     name = "eth0"
@@ -20,7 +17,7 @@ resource "lxd_profile" "default" {
     type = "disk"
 
     properties = {
-      pool = "default"
+      pool = "nvme0n1"
       path = "/"
     }
   }
