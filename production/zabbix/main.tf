@@ -25,6 +25,7 @@ module "zfs" {
 
   name    = "${local.name}-zfs"
   project = var.project
+  storage_pool = var.storage_pool
 }
 
 resource "lxd_instance" "this" {

@@ -1,17 +1,8 @@
-module "grafana" {
-  source = "./grafana"
+# module "dev-tools" {
+#   source = "./dev-tools"
 
-  project = lxd_project.this.name
-  image   = lxd_cached_image.jammy.fingerprint
+#   project = lxd_project.this.name
+#   images  = lxd_cached_image.jammy.fingerprint
 
-  addresses = [1]
-}
-
-module "zabbix" {
-  source = "./zabbix"
-
-  project = lxd_project.this.name
-  image   = lxd_cached_image.jammy.fingerprint
-
-  addresses = [0]
-}
+#   addresses = [2]
+# }

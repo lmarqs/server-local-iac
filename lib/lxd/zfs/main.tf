@@ -9,6 +9,12 @@ variable "project" {
   default     = null
 }
 
+variable "storage_pool" {
+  description = "The storage pool to use"
+  type        = string
+  default     = null
+}
+
 resource "lxd_profile" "this" {
   name    = var.name
   project = var.project
@@ -18,7 +24,7 @@ resource "lxd_profile" "this" {
     type = "disk"
 
     properties = {
-      pool = "zfs"
+      pool = var.storage_pool
       path = "/"
     }
   }
