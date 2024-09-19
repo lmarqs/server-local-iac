@@ -15,8 +15,8 @@ runcmd:
   - echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | tee /etc/apt/sources.list.d/influxdata.list
 
   # Install Softwares
-  - apt update
-  - DEBIAN_FRONTEND=noninteractive apt install -y influxdb2 mysql-server zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent
+  - apt-get update
+  - DEBIAN_FRONTEND=noninteractive apt-get install -y influxdb2 mysql-server zabbix-server-mysql zabbix-frontend-php zabbix-apache-conf zabbix-sql-scripts zabbix-agent
 
   # Setup Database
   - mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql --database=mysql -uroot -ppassword
